@@ -1,0 +1,110 @@
+char x;
+int cm = 0;
+
+//IR Sensors
+int IRSensorL = 2;
+int IRSensorR = 3;
+
+//Motor1
+int EnA = A0;
+int In1 = 12;
+int In2 = 11;
+//Motor2
+int EnB = A1;
+int In3 = 10;
+int In4 = 9;
+
+int speedpog = 1022;
+int LED1 = 13;
+int LED2 = A2;
+int LED3 = A3;
+int LED4 = A4;
+
+//Ulstrasonic
+long readUltrasonicDistance(int triggerPin, int echoPin)
+{
+  pinMode(triggerPin, OUTPUT);
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  pinMode(echoPin, INPUT);
+  return pulseIn(echoPin, HIGH);
+}
+
+
+void setup(){
+  Serial.begin(9600);
+  pinMode(IRSensorL,INPUT);
+  pinMode(IRSensorR,INPUT);
+  pinMode(EnA,OUTPUT);
+  pinMode(In1,OUTPUT);
+  pinMode(In2,OUTPUT);
+  pinMode(EnB,OUTPUT);
+  pinMode(In3,OUTPUT);
+  pinMode(In4,OUTPUT);
+}
+
+void loop(){
+  if(Serial.available()>0){
+    x = Serial.read();
+    Serial.println(x);
+    delay(10);
+    if(x == '5'){
+      speedpog = speedpog + 200;
+      if(speedpog > 1022){
+        speedpog = 1022;
+      }
+    }
+    if(x == '6'){
+      speedpog = speedpog - 200;
+      if(speedpog < 1){
+        speedpog = 0;
+      }
+    }
+    if(x == '1'){
+      digitalWrite(In1,LOW);
+      digitalWrite(In2,HIGH);
+      digitalWrite(In3,LOW);
+      digitalWrite(In4,HIGH);
+      analogWrite(EnA,speedpog);
+      analogWrite(EnB,speedpog);
+      delay(200);
+    }
+    if(x == '2'){
+      digitalWrite(In1,HIGH);
+      digitalWrite(In2,LOW);
+      digitalWrite(In3,HIGH);
+      digitalWrite(In4,LOW);
+      analogWrite(EnA,speedpog);
+      analogWrite(EnB,speedpog);
+      delay(200);
+    }
+    if(x == '3'){
+      digitalWrite(In1,HIGH);
+      digitalWrite(In2,LOW);
+      digitalWrite(In3,LOW);
+      digitalWrite(In4,HIGH);
+      analogWrite(EnA,speedpog);
+      analogWrite(EnB,speedpog);
+      delay(200);
+    }
+    if(x == '4'){
+      digitalWrite(In1,LOW);
+      digitalWrite(In2,HIGH);
+      digitalWrite(In3,HIGH);
+      digitalWrite(In4,LOW);
+      analogWrite(EnA,speedpog);
+      analogWrite(EnB,speedpog);
+      delay(200);
+    }
+    digitalWrite(In1,LOW);
+    digitalWrite(In2,LOW);
+    digitalWrite(In3,LOW);
+    digitalWrite(In4,LOW);
+    analogWrite(EnA,0);
+    analogWrite(EnB,0);
+    delay(10);
+  }
+}

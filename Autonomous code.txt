@@ -1,0 +1,82 @@
+char x;
+int cm = 0;
+
+//IR Sensors
+int IRSensorL = 2;
+int IRSensorR = 3;
+
+//Motor1
+int EnA = A0;
+int In1 = 12;
+int In2 = 11;
+//Motor2
+int EnB = A1;
+int In3 = 10;
+int In4 = 9;
+
+int speedpog = 1022;
+int LED1 = 13;
+int LED2 = A2;
+int LED3 = A3;
+int LED4 = A4;
+
+//Ulstrasonic
+long readUltrasonicDistance(int triggerPin, int echoPin)
+{
+  pinMode(triggerPin, OUTPUT);
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  pinMode(echoPin, INPUT);
+  return pulseIn(echoPin, HIGH);
+}
+
+
+void setup(){
+  Serial.begin(9600);
+  pinMode(IRSensorL,INPUT);
+  pinMode(IRSensorR,INPUT);
+  pinMode(EnA,OUTPUT);
+  pinMode(In1,OUTPUT);
+  pinMode(In2,OUTPUT);
+  pinMode(EnB,OUTPUT);
+  pinMode(In3,OUTPUT);
+  pinMode(In4,OUTPUT);
+}
+
+void loop(){
+  cm = 0.01723 * readUltrasonicDistance(7, 6);
+  int sensorstatus1 = digitalRead(IRSensorL);
+  int sensorstatus2 = digitalRead(IRSensorR);
+  if((sensorstatus1 != 1)and(sensorstatus2 != 1)){
+    if(cm < 10){
+      digitalWrite(In1,LOW);
+      digitalWrite(In2,HIGH);
+      digitalWrite(In3,LOW);
+      digitalWrite(In4,HIGH);
+      analogWrite(EnA,1022);
+      analogWrite(EnB,1022);
+      delay(5);
+    }
+    if(cm > 10){
+      digitalWrite(In1,HIGH);
+      digitalWrite(In2,LOW);
+      digitalWrite(In3,LOW);
+      digitalWrite(In4,HIGH);
+      analogWrite(EnA,1022);
+      analogWrite(EnB,1022);
+      delay(5);
+    }
+  }
+  else{
+    digitalWrite(In1,HIGH);
+    digitalWrite(In2,LOW);
+    digitalWrite(In3,HIGH);
+    digitalWrite(In4,LOW);
+    analogWrite(EnA,1022);
+    analogWrite(EnB,1022);
+    delay(5);
+  }
+}
